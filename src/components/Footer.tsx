@@ -1,11 +1,11 @@
 export const Footer = () => {
     return(
         <footer id="footer" className=" h-auto w-full md:px-20 md:gap-0 sm:px-20 px-10 gap-10 flex py-10 bg-[#3b3c36] footer flex-wrap">
-                <div className="logo w-[420px]">
+                <div className="logo w-[380px]">
                 <img className="w-24 h-24 mb-10" src="/sentiment-black.png" alt="" />
                 <p>We are a group of students from Jose Rizal University passionate about web development and design. Our goal is to create innovative and user-friendly websites that solve real-world problems. This website is one of our class projects, where we put our skills to the test and gained valuable experience in web development.</p>
                 </div>
-                <div className="contact sm:pl-0 md:pl-20 flex flex-col gap-5 w-[420px]">
+                <div className="contact sm:pl-0 md:pl-20 flex flex-col gap-5 w-[380px]">
                     <h1 className="font-thin text-2xl">Contacts</h1>
                     <div className="flex gap-2">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
@@ -31,7 +31,7 @@ export const Footer = () => {
     />{" "}
   </g>
 </svg>
-<p>Phone: +63 981-264-5579</p>
+<p>Phone: +63 939-608-0660</p>
                     </div>
 
 
@@ -72,7 +72,7 @@ className="w-6 h-6"
     </g>{" "}
   </g>
 </svg>
-<p>Email: sentiment@gmail.com</p>
+<p>Email: codesmiths9@gmail.com</p>
 </div>
 <div className="flex gap-2">
 <svg
@@ -102,13 +102,13 @@ className="w-6 h-6"
     />{" "}
   </g>
 </svg>
-<p>Balintawak, Quezon City</p>
+<p>Bambang, Pasig City</p>
 </div>
 
 
 
                 </div>
-                <div className="socials sm:pl-0  md:pl-20  w-[420px] flex flex-col gap-5">
+                <div className="socials sm:pl-0  md:pl-20  w-[380px] flex flex-col gap-5">
                 <h1 className="font-thin text-2xl">Follow Us!</h1>
                 <div className="flex gap-8">
                 <svg
@@ -207,3 +207,4 @@ className="w-6 h-6"
         </footer>
     )
 }
+
