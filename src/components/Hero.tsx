@@ -1,83 +1,143 @@
-import React, { useEffect, useState } from 'react'
-import Sentiment, { AnalysisResult } from 'sentiment';
+import React, { useState, useMemo } from 'react';
+import Sentiment from 'sentiment';
 import TextField from '@mui/material/TextField';
-import ReactSpeedometer from "react-d3-speedometer"
-import data from '../assets/tagalogWords.json'
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { TypeAnimation } from 'react-type-animation';
 import axios from 'axios';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 interface IHero {
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const Hero:React.FC<IHero> = ({setIsLoading}) => {
-    const [selectTagalogText, setSelectTagalogText] = useState("")
-    const [selectEnglishText, setSelectEnglishText] = useState("")
-    const [postID, setPostID] = useState('')
-    const [comments, setComments] = useState([{message:""}])
-    const [errorPostID, setErrorPostID] = useState(false)
-    const [result, setResult] = useState<AnalysisResult>({
-        score: 0,
-        comparative: 0,
-        calculation: [],
-        tokens: [],
-        words: [],
-        positive: [],
-        negative: [],
-    });
-    useEffect(() => {
-        const sentiment = new Sentiment()
-        var tlLanguage = data
-        sentiment.registerLanguage('tl', tlLanguage)
-        const englishResult = sentiment.analyze(selectEnglishText, { language: 'en' })
-        setResult(englishResult)
-        console.log(englishResult)
 
-    }, [selectEnglishText])
+export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
+    const [postID, setPostID] = useState('');
+    const [errorPostID, setErrorPostID] = useState(false);
+    
+    // New state to store analyzed results for all comments
+    const [analyzedComments, setAnalyzedComments] = useState<{
+        comment: string;
+        score: number;
+        comparative: number;
+        positive: string[];
+        negative: string[];
+        sentiment: string;
+    }[]>([]);
 
-    useEffect(() => {
-        const sentiment = new Sentiment()
-        var tlLanguage = data
-        sentiment.registerLanguage('tl', tlLanguage)
-        const tagalogResult = sentiment.analyze(selectTagalogText, { language: 'tl' })
-        console.log(tagalogResult)
-        setResult(tagalogResult)
-    }, [selectTagalogText])
+    const [overallAnalysis, setOverallAnalysis] = useState<{
+        topPositiveWords: string[];
+        topNegativeWords: string[];
+        overallSentiment: string;
+        overallScore: number;
+        scoreMagnitude: number;
+        coreSentences: { comment: string; score: number; }[];
+        scoreRange: { min: number; max: number; };
+    } | null>(null);
 
-    // const postID = '122106337976505770'
-    const pageID = '61565173125480'
-    const accessToken = 'EAALpNpGZAkzkBO1XBM0ZCNh7Oyz4vq4CmhKKPFO1HVf8fQd4mghDnA545Aka7quYcMx7etoOg4Ms5xK1fZA2edfNu4Wbmj1KZC2l1YDxxB5F5HG7XWfVZCwEZA0xI1ULbp5psJyTCyMJDetEXxMTSYIZCKNiYNztUigIxsDWUAdmvQmyGidkZBtfFO4JYBKMYMcfSR3iz0aJ'
+    const pageID = '61565173125480';
+    const accessToken = 'EAALpNpGZAkzkBO1XBM0ZCNh7Oyz4vq4CmhKKPFO1HVf8fQd4mghDnA545Aka7quYcMx7etoOg4Ms5xK1fZA2edfNu4Wbmj1KZC2l1YDxxB5F5HG7XWfVZCwEZA0xI1ULbp5psJyTCyMJDetEXxMTSYIZCKNiYNztUigIxsDWUAdmvQmyGidkZBtfFO4JYBKMYMcfSR3iz0aJ'; // Replace with your actual access token
 
+    // Fetch comments and analyze each one
     async function getComments(e: React.FormEvent<HTMLFormElement>) {
-        try {
-            e.preventDefault()
-            if(postID.trim() !== ''){
-                setIsLoading(true)
-                const fetchedData = await axios.get(`https://graph.facebook.com/v20.0/${pageID}_${postID}/comments?access_token=${accessToken}`)
-                const result = fetchedData.data
-                console.log(result.data)
-                setComments(result.data)
-                setIsLoading(false)
+        e.preventDefault();
+        if (postID.trim() !== '') {
+            setIsLoading(true);
+            try {
+                const fetchedData = await axios.get(`https://graph.facebook.com/v20.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
+                const result = (fetchedData.data as {data: { [key: string]: any }}).data.data || [];
+
+                // Analyze each comment
+                const sentiment = new Sentiment();
+                const analyzed = result.map((commentObj: { message: string }) => {
+                    const analysis = sentiment.analyze(commentObj.message);
+                    return {
+                        comment: commentObj.message,
+                        score: analysis.score,
+                        comparative: analysis.comparative,
+                        positive: analysis.positive,
+                        negative: analysis.negative,
+                        sentiment: analysis.score > 0 ? 'Positive' : analysis.score < 0 ? 'Negative' : 'Neutral',
+                    };
+                });
+                
+                setAnalyzedComments(analyzed); // Save analyzed comments
+                analyzeOverallResults(analyzed); // Analyze overall results
+                setIsLoading(false);
+            } catch (error) {
+                setIsLoading(false);
+                console.log(error);
+                setErrorPostID(true);
+                setTimeout(() => setErrorPostID(false), 3000);
             }
-        } catch (error) {
-            setIsLoading(false)
-            console.log(error)
-            setErrorPostID(true)
-            setTimeout(()=>setErrorPostID(false), 3000)
         }
     }
+
+    // Function to analyze overall results from comments
+    const analyzeOverallResults = (analyzed: any[]) => {
+        const positiveWordFreq: Record<string, number> = {};
+        const negativeWordFreq: Record<string, number> = {};
+        let overallScore = 0;
+        let scoreMagnitude = 0;
+
+        analyzed.forEach((comment) => {
+            overallScore += comment.score;
+            scoreMagnitude += Math.abs(comment.score);
+            comment.positive.forEach((word: string) => {
+                positiveWordFreq[word] = (positiveWordFreq[word] || 0) + 1;
+            });
+            comment.negative.forEach((word: string) => {
+                negativeWordFreq[word] = (negativeWordFreq[word] || 0) + 1;
+            });
+        });
+
+        const topPositiveWords = Object.entries(positiveWordFreq)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([word]) => word);
+
+        const topNegativeWords = Object.entries(negativeWordFreq)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([word]) => word);
+
+        const overallSentiment =
+            overallScore > 0 ? 'Positive' : overallScore < 0 ? 'Negative' : 'Neutral';
+
+        const coreSentences = analyzed
+            .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
+            .slice(0, 3);
+
+        const scoreRange = {
+            min: Math.min(...analyzed.map(c => c.score)),
+            max: Math.max(...analyzed.map(c => c.score)),
+        };
+
+        setOverallAnalysis({
+            topPositiveWords,
+            topNegativeWords,
+            overallSentiment,
+            overallScore,
+            scoreMagnitude,
+            coreSentences,
+            scoreRange,
+        });
+    };
+
     return (
         <div className="hero flex sm:pt-0 h-auto py-0 sm:px-20 mt-20 sm:mt-28 " id='home'>
             <div className="section1 sm:w-1/2 w-full flex flex-col gap-2 px-6 py-6 sm:py-10 ">
                 <div className='mb-10'>
                     <TypeAnimation
                         sequence={[
-                            // Same substring at the start will only be typed out once, initially
                             'Sentimental Analysis',
-                            1000, // wait 1s before replacing "Mice" with "Hamsters"
+                            1000,
                             'Enter your feedback',
                             1000,
                             'Analyze your feelings',
@@ -89,21 +149,19 @@ export const Hero:React.FC<IHero> = ({setIsLoading}) => {
                         style={{ display: 'inline-block' }}
                         repeat={Infinity}
                     />
-                    {/* {typeError && <p className='font-semibold text-xl'>Pick a Language</p>} */}
-
+                    
                     <form onSubmit={(e) => { getComments(e) }}>
                         <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
                             <FormControl fullWidth>
                                 <TextField id="standard-basic" required value={postID} onChange={(e) => { setPostID(e.currentTarget.value) }}
                                     label="Enter your post ID" variant="standard" />
-                                {/* {typeError && <p className='text-red-500 mt-5'>Please select a language first!</p>} */}
                             </FormControl>
                         </Box>
                         {errorPostID &&                         
                         <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
-                        <FormControl fullWidth>
-                            <p className='error text-red-500 text-sm'>Your Post ID is invalid!</p>
-                        </FormControl>
+                            <FormControl fullWidth>
+                                <p className='error text-red-500 text-sm'>Your Post ID is invalid!</p>
+                            </FormControl>
                         </Box>}
 
                         <Box sx={{ minWidth: 120 }}>
@@ -111,143 +169,71 @@ export const Hero:React.FC<IHero> = ({setIsLoading}) => {
                         </Box>
                     </form>
                 </div>
-                {comments.length > 1 && <>
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Select English Comments</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                label="English Comments"
-                                value={selectEnglishText}
-                                onChange={(e) => { setSelectEnglishText(e.target.value) }}
-                            >
-                                {comments.map((e,  i)=>{
-                                       return (
-                                               <MenuItem key={i} value={e.message}>{e.message}</MenuItem> 
-                                       )
-                                })}          
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Select Tagalog Comments</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                label="Tagalog Comments"
-                                value={selectTagalogText}
-                                onChange={(e) => { setSelectTagalogText(e.target.value) }}
-                            >
-                                {comments.map((e,  i)=>{
-                                       return (
-                                               <MenuItem key={i} value={e.message}>{e.message}</MenuItem> 
-                                       )
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                </>}
 
-                {result && (
-                    <div className='section1 h-auto flex flex-col gap-10 justify-between py-5 sm:py-10 sm:px-10 px-5 border shadow-1xl rounded-lg'>
-                        <p className='text-right sm:px-10 font-semibold text-md'>Analysis Result</p>
-                        <div className="flex flex-col gap-5 w-full">
-                            <p className=' font-medium'>Emotion Status                        
-                                 {result.score === 0 ? <label >😐</label> : result.score < 0 && result.score >= -3 ? <label>☹️</label> :
-                                result.score < -3 ? <label>😭</label> : result.score > 0 && result.score <= 3 ? <label>😊</label> : <label>🥰</label>}</p>
-                                <p className='font-medium'>Result: {result.score==0?(<label>Netural</label>):result.score>0?(<label>Positive</label>):(<label>Negative</label>)}</p>
-                            <p className='font-medium'>Words: {result.tokens ?
-                                result.tokens.map((e, i) => {
-                                    if (i == result.tokens.length - 1) {
-                                        return (
-                                            <label key={i}>{e} </label>)
-                                    } else {
-                                        return (
-                                            <label key={i}>{e}, </label>)
-                                    }
+                {/* Table for displaying all analyzed comments */}
+                {analyzedComments.length > 0 && (
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Comment</TableCell>
+                                    <TableCell align="right">Score</TableCell>
+                                    <TableCell align="right">Comparative</TableCell>
+                                    <TableCell align="right">Positive Words</TableCell>
+                                    <TableCell align="right">Negative Words</TableCell>
+                                    <TableCell align="right">Overall Sentiment</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {analyzedComments.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell component="th" scope="row">{row.comment}</TableCell>
+                                        <TableCell align="right">{row.score}</TableCell>
+                                        <TableCell align="right">{row.comparative.toFixed(2)}</TableCell>
+                                        <TableCell align="right">{row.positive.join(', ') || '-'}</TableCell>
+                                        <TableCell align="right">{row.negative.join(', ') || '-'}</TableCell>
+                                        <TableCell align="right">{row.sentiment}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
 
-                                }) : null}</p>
+                {/* Overall analysis display */}
+                {overallAnalysis && (
+                    <div className="mt-6">
+                        <h2>Overall Analysis</h2>
+                        <p>Overall Sentiment: {overallAnalysis.overallSentiment}</p>
+                        <p>Total Score: {overallAnalysis.overallScore}</p>
+                        <p>Magnitude: {overallAnalysis.scoreMagnitude}</p>
+                        
+                        <h3>Top 10 Positive Words</h3>
+                        <ul>
+                            {overallAnalysis.topPositiveWords.map((word, index) => (
+                                <li key={index}>{word}</li>
+                            ))}
+                        </ul>
 
+                        <h3>Top 10 Negative Words</h3>
+                        <ul>
+                            {overallAnalysis.topNegativeWords.map((word, index) => (
+                                <li key={index}>{word}</li>
+                            ))}
+                        </ul>
 
+                        <h3>Core Sentences</h3>
+                        <ul>
+                            {overallAnalysis.coreSentences.map((sentence, index) => (
+                                <li key={index}>{sentence.comment}</li>
+                            ))}
+                        </ul>
 
-                            <p className='font-medium'>Negative Words: {result.negative ?
-                                result.negative.map((e, i) => {
-                                    if (i == result.negative.length - 1) {
-                                        return (
-                                            <label key={i}>{e} </label>)
-                                    }
-                                    return (
-                                        <label key={i}>{e}, </label>)
-                                }) : null}</p>
-                            <p className='font-medium'>Positive Words: {result.positive ?
-                                result.positive.map((e, i) => {
-                                    if (i == result.positive.length - 1) {
-                                        return (
-                                            <label key={i}>{e} </label>)
-                                    }
-                                    return (
-                                        <label key={i}>{e}, </label>)
-                                }) : null}</p>
-                            <p className='font-medium'>Comparative {result.comparative?.toFixed(2)}</p>
-                            <p className='font-medium'>Score: {result.score}</p>
-
-
-                        </div>
-
+                        <h3>Score Range</h3>
+                        <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
                     </div>
                 )}
             </div>
-            <div className="section2 sm:w-1/2 hidden p-5 sm:flex flex-col gap-2 justify-center items-center shadow-md border rounded-2xl">
-                <h1 className='font-semibold text-3xl'>Emotion Meter</h1>
-                {result && (
-                    <>
-                        {result.score === 0 ?
-                            <p className='text-[8rem]'>😐</p> : result.score < 0 && result.score >= -3 ?
-                                <p className='text-[8rem]'>☹️</p> :
-                                result.score < -3 ?
-                                    <p className='text-[8rem]'>😭</p> : result.score > 0 && result.score <= 3 ?
-                                        <p className='text-[8rem]'>😊</p> :
-                                        <p className='text-[8rem]'>🥰</p>}
-                    </>
-                )}
-                <div className=''>
-                    <ReactSpeedometer
-                        width={500}
-                        needleHeightRatio={0.7}
-                        value={result.score}
-                        minValue={-10}
-                        maxValue={10}
-                        customSegmentStops={[-10, -5, 0, 5, 10]}
-                        currentValueText="Happiness Level"
-                        customSegmentLabels={[
-                            {
-                                text: 'Very Bad',
-                                color: '#555',
-                            },
-                            {
-                                text: 'Bad',
-                                color: '#555',
-                            },
-                            {
-                                text: 'Good',
-                                color: '#555',
-                            },
-                            {
-                                text: 'Very Good',
-                                color: '#555',
-                            },
-                        ]}
-                        ringWidth={47}
-                        needleTransitionDuration={3333}
-                        // needleTransition="easeElastic"
-                        needleColor={'#3b3c36 '}
-                        textColor={'#3b3c36'}
-                    />
-                </div>
-
-            </div>
         </div>
-    )
+    );
 }
