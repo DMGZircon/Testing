@@ -51,6 +51,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             setIsLoading(true);
             try {
                 const fetchedData = await axios.get(`https://graph.facebook.com/v20.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
+                console.log(fetchedData.data); // Log the fetched data
                 const result = (fetchedData.data as {data: { [key: string]: any }}).data.data || [];
 
                 // Analyze each comment
@@ -71,14 +72,13 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 analyzeOverallResults(analyzed); // Analyze overall results
                 setIsLoading(false);
             } catch (error) {
+                console.error(error); // Log the error for debugging
                 setIsLoading(false);
-                console.log(error);
                 setErrorPostID(true);
                 setTimeout(() => setErrorPostID(false), 3000);
             }
         }
     }
-
     // Function to analyze overall results from comments
     const analyzeOverallResults = (analyzed: any[]) => {
         const positiveWordFreq: Record<string, number> = {};
