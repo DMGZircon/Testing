@@ -42,7 +42,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     } | null>(null);
 
     const pageID = '61565173125480';
-    const accessToken = 'EAAGPClb9OksBO3ag6VU8n96iDXxHuAa6pr8Ee9ux3oh22WWUZAVf78XjsLOEwq8ZCWZA7NePyJak4pwMdRiV4WteoBvYlgncRgmktSYlMBeK0XlZChvr8if96GxOX83IXceAxZBqeZAClAsKK2y4ri5SJEp8mnRuPSfRnhZC7IbtNgKC1LfmkvrdyoSpWYFZAelWtMJ1qL38SGUyy2wUZCWzPHZBqWu4hVWXpNto8ZD'; // Replace with your actual access token
+    const accessToken = 'EAALpNpGZAkzkBO1XBM0ZCNh7Oyz4vq4CmhKKPFO1HVf8fQd4mghDnA545Aka7quYcMx7etoOg4Ms5xK1fZA2edfNu4Wbmj1KZC2l1YDxxB5F5HG7XWfVZCwEZA0xI1ULbp5psJyTCyMJDetEXxMTSYIZCKNiYNztUigIxsDWUAdmvQmyGidkZBtfFO4JYBKMYMcfSR3iz0aJ'; // Replace with your actual access token
 
     // Fetch comments and analyze each one
     async function getComments(e: React.FormEvent<HTMLFormElement>) {
