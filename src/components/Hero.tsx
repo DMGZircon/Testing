@@ -12,6 +12,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Pagination from '@mui/material/Pagination'; // Import Pagination
+
 
 interface IHero {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,6 +43,10 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         scoreRange: { min: number; max: number; };
     } | null>(null);
 
+    const [currentPage, setCurrentPage] = useState(1); // State for pagination
+    const commentsPerPage = 5; // Number of comments per page
+
+
     const pageID = '432818713243101';
     const accessToken = 'EAAZASei56b9cBO02glJ1FNT3z5yfRtvgIJ8iF2jne1Xupuo2aKWPT3nrF7vllDt7EdZBPyYowRTZC66Y632z4ZAmGhynKZCsrl29kw1pCZATTRJtVvuOJr7OEZBaGBeKcYKZBH4rvazcY0SA7GlnWYgiGgEjfA0bapXo1CRHdcGdfY9KcCIDzt5SGFZAmb9tXdZBnWO424jw8Y'; // Replace with your actual access token
 
@@ -52,9 +58,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             try {
                 const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
                 console.log(fetchedData.data); // Log the fetched data
-                const result = (fetchedData.data as {data: { [key: string]: any }}).data|| [];
-                console.log('Fetched Data Content:', fetchedData.data); // Log content of fetchedData.data to examine structure
-                console.log('Comments Result:', result); // Logs the extracted array of comments
+                const result = (fetchedData.data as {data: { [key: string]: any }}).data || [];
 
                 // Analyze each comment
                 const sentiment = new Sentiment();
@@ -133,6 +137,14 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             scoreRange,
         });
     };
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value); // Update the current page
+    };
+    // Get current comments based on the page
+    const indexOfLastComment = currentPage * commentsPerPage;
+    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+    const currentComments = analyzedComments.slice(indexOfFirstComment, indexOfLastComment);
+    const totalPages = Math.ceil(analyzedComments.length / commentsPerPage);
 
     return (
         <div className="hero flex sm:pt-0 h-auto py-0 sm:px-20 mt-20 sm:mt-28 " id='home'>
@@ -238,6 +250,17 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                     </div>
                 )}
             </div>
+            // Pagination controls
+{analyzedComments.length > 0 && (
+    <Pagination
+        count={totalPages}
+        page={currentPage}
+        onChange={handlePageChange}
+        variant="outlined"
+        shape="rounded"
+        sx={{ marginTop: '16px' }} // Optional styling
+    />
+)}
         </div>
     );
 }
