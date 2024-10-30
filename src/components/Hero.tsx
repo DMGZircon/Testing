@@ -50,7 +50,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         if (postID.trim() !== '') {
             setIsLoading(true);
             try {
-                const fetchedData = await axios.get(`https://graph.facebook.com/v20.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
+                const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
                 console.log(fetchedData.data); // Log the fetched data
                 const result = (fetchedData.data as {data: { [key: string]: any }}).data.data || [];
 
