@@ -58,6 +58,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 const sentiment = new Sentiment();
                 const analyzed = result.map((commentObj: { message: string }) => {
                     const analysis = sentiment.analyze(commentObj.message);
+                    console.log("Comment Analysis:", analysis); // Log the analysis
                     return {
                         comment: commentObj.message,
                         score: analysis.score,
@@ -69,6 +70,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 });
                 
                 setAnalyzedComments(analyzed); // Save analyzed comments
+                console.log("Analyzed Comments State:", analyzed);
                 analyzeOverallResults(analyzed); // Analyze overall results
                 setIsLoading(false);
             } catch (error) {
