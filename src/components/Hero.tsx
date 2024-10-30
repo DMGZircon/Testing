@@ -137,7 +137,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             scoreRange,
         });
     };
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value); // Update the current page
     };
     // Get current comments based on the page
@@ -187,7 +187,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 </div>
 
                 {/* Table for displaying all analyzed comments */}
-                {analyzedComments.length > 0 && (
+                {currentComments.length > 0 && (
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
                             <TableHead>
