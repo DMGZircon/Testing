@@ -53,6 +53,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
                 console.log(fetchedData.data); // Log the fetched data
                 const result = (fetchedData.data as {data: { [key: string]: any }}).data.data || [];
+                console.log('Fetched Data Content:', fetchedData.data); // Log content of fetchedData.data to examine structure
                 console.log('Comments Result:', result); // Logs the extracted array of comments
 
                 // Analyze each comment
