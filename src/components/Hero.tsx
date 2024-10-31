@@ -13,6 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import tagalogWords from '../assets/tagalogWords.json'; // Import Tagalog words
 
 interface IHero {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -54,8 +55,15 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 const result = (fetchedData.data as { data: { [key: string]: any } }).data || [];
                 
                 const sentiment = new Sentiment();
+
+                // Register custom Tagalog words
+                sentiment.registerLanguage('custom', {
+                    ...tagalogWords
+                });
+
+                // Analyze comments
                 const analyzed = result.map((commentObj: { message: string }) => {
-                    const analysis = sentiment.analyze(commentObj.message);
+                    const analysis = sentiment.analyze(commentObj.message, { language: 'custom' });
                     return {
                         comment: commentObj.message,
                         score: analysis.score,
@@ -201,7 +209,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                         </Table>
                     </TableContainer>
                 )}
-
+                
                 <div className="flex justify-center mt-4">
                     {Array.from({ length: Math.ceil(analyzedComments.length / commentsPerPage) }, (_, index) => (
                         <Button
@@ -250,4 +258,4 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             </div>
         </div>
     );
-}
+};
