@@ -12,7 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
+import Button from '@mui/material/Button';
 
 interface IHero {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,8 +21,6 @@ interface IHero {
 export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     const [postID, setPostID] = useState('');
     const [errorPostID, setErrorPostID] = useState(false);
-    
-    // New state to store analyzed results for all comments
     const [analyzedComments, setAnalyzedComments] = useState<{
         comment: string;
         score: number;
@@ -31,7 +29,6 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         negative: string[];
         sentiment: string;
     }[]>([]);
-
     const [overallAnalysis, setOverallAnalysis] = useState<{
         topPositiveWords: string[];
         topNegativeWords: string[];
@@ -43,23 +40,22 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     } | null>(null);
 
     const pageID = '432818713243101';
-    const accessToken = 'EAAZASei56b9cBO02glJ1FNT3z5yfRtvgIJ8iF2jne1Xupuo2aKWPT3nrF7vllDt7EdZBPyYowRTZC66Y632z4ZAmGhynKZCsrl29kw1pCZATTRJtVvuOJr7OEZBaGBeKcYKZBH4rvazcY0SA7GlnWYgiGgEjfA0bapXo1CRHdcGdfY9KcCIDzt5SGFZAmb9tXdZBnWO424jw8Y'; // Replace with your actual access token
+    const accessToken = 'EAAZASei56b9cBO02glJ1FNT3z5yfRtvgIJ8iF2jne1Xupuo2aKWPT3nrF7vllDt7EdZBPyYowRTZC66Y632z4ZAmGhynKZCsrl29kw1pCZATTRJtVvuOJr7OEZBaGBeKcYKZBH4rvazcY0SA7GlnWYgiGgEjfA0bapXo1CRHdcGdfY9KcCIDzt5SGFZAmb9tXdZBnWO424jw8Y';
 
-    // Fetch comments and analyze each one
+    const [currentPage, setCurrentPage] = useState(1);
+    const commentsPerPage = 5; // Number of comments per page
+
     async function getComments(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (postID.trim() !== '') {
             setIsLoading(true);
             try {
                 const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
-                console.log(fetchedData.data); // Log the fetched data
-                const result = (fetchedData.data as {data: { [key: string]: any }}).data || [];
-
-                // Analyze each comment
+                const result = (fetchedData.data as { data: { [key: string]: any } }).data || [];
+                
                 const sentiment = new Sentiment();
                 const analyzed = result.map((commentObj: { message: string }) => {
                     const analysis = sentiment.analyze(commentObj.message);
-                    console.log("Comment Analysis:", analysis); // Log the analysis
                     return {
                         comment: commentObj.message,
                         score: analysis.score,
@@ -70,19 +66,18 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                     };
                 });
                 
-                setAnalyzedComments(analyzed); // Save analyzed comments
-                console.log("Analyzed Comments State:", analyzed);
-                analyzeOverallResults(analyzed); // Analyze overall results
+                setAnalyzedComments(analyzed);
+                analyzeOverallResults(analyzed);
                 setIsLoading(false);
             } catch (error) {
-                console.error(error); // Log the error for debugging
+                console.error(error);
                 setIsLoading(false);
                 setErrorPostID(true);
                 setTimeout(() => setErrorPostID(false), 3000);
             }
         }
     }
-    // Function to analyze overall results from comments
+
     const analyzeOverallResults = (analyzed: any[]) => {
         const positiveWordFreq: Record<string, number> = {};
         const negativeWordFreq: Record<string, number> = {};
@@ -133,6 +128,12 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         });
     };
 
+    // Pagination helpers
+    const indexOfLastComment = currentPage * commentsPerPage;
+    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+    const currentComments = analyzedComments.slice(indexOfFirstComment, indexOfLastComment);
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
         <div className="hero flex sm:pt-0 h-auto py-0 sm:px-20 mt-20 sm:mt-28 " id='home'>
@@ -153,7 +154,6 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                         style={{ display: 'inline-block' }}
                         repeat={Infinity}
                     />
-                    
                     <form onSubmit={(e) => { getComments(e) }}>
                         <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
                             <FormControl fullWidth>
@@ -161,21 +161,19 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                                     label="Enter your post ID" variant="standard" />
                             </FormControl>
                         </Box>
-                        {errorPostID &&                         
+                        {errorPostID &&
                         <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
                             <FormControl fullWidth>
                                 <p className='error text-red-500 text-sm'>Your Post ID is invalid!</p>
                             </FormControl>
                         </Box>}
-
                         <Box sx={{ minWidth: 120 }}>
                             <button className='bg-neutral-600 text-white px-4 py-2 rounded-md text-sm font-normal' type='submit'>Submit</button>
                         </Box>
                     </form>
                 </div>
 
-                {/* Table for displaying all analyzed comments */}
-                {analyzedComments.length > 0 && (
+                {currentComments.length > 0 && (
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
                             <TableHead>
@@ -189,7 +187,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {analyzedComments.map((row, index) => (
+                                {currentComments.map((row, index) => (
                                     <TableRow key={index}>
                                         <TableCell component="th" scope="row">{row.comment}</TableCell>
                                         <TableCell align="right">{row.score}</TableCell>
@@ -204,37 +202,21 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                     </TableContainer>
                 )}
 
-                {/* Overall analysis display */}
+                <div className="flex justify-center mt-4">
+                    {Array.from({ length: Math.ceil(analyzedComments.length / commentsPerPage) }, (_, index) => (
+                        <Button
+                            key={index + 1}
+                            variant={index + 1 === currentPage ? "contained" : "outlined"}
+                            onClick={() => paginate(index + 1)}
+                        >
+                            {index + 1}
+                        </Button>
+                    ))}
+                </div>
+
                 {overallAnalysis && (
                     <div className="mt-6">
-                        <h2>Overall Analysis</h2>
-                        <p>Overall Sentiment: {overallAnalysis.overallSentiment}</p>
-                        <p>Total Score: {overallAnalysis.overallScore}</p>
-                        <p>Magnitude: {overallAnalysis.scoreMagnitude}</p>
-                        
-                        <h3>Top 10 Positive Words</h3>
-                        <ul>
-                            {overallAnalysis.topPositiveWords.map((word, index) => (
-                                <li key={index}>{word}</li>
-                            ))}
-                        </ul>
-
-                        <h3>Top 10 Negative Words</h3>
-                        <ul>
-                            {overallAnalysis.topNegativeWords.map((word, index) => (
-                                <li key={index}>{word}</li>
-                            ))}
-                        </ul>
-
-                        <h3>Core Sentences</h3>
-                        <ul>
-                            {overallAnalysis.coreSentences.map((sentence, index) => (
-                                <li key={index}>{sentence.comment}</li>
-                            ))}
-                        </ul>
-
-                        <h3>Score Range</h3>
-                        <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
+                        {/* Overall Analysis Display */}
                     </div>
                 )}
             </div>
