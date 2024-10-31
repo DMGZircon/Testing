@@ -219,8 +219,8 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                         {/* Overall Analysis Display */}
                         <h1><b>Overall Analysis</b></h1>
                         <p><b>Overall Sentiment:</b> {overallAnalysis.overallSentiment}</p>
-                        <p><b>Total Score: {overallAnalysis.overallScore}</p>
-                        <p><b>Magnitude: {overallAnalysis.scoreMagnitude}</p>
+                        <p><b>Total Score:</b> {overallAnalysis.overallScore}</p>
+                        <p><b>Magnitude:</b> {overallAnalysis.scoreMagnitude}</p>
                         
                         <h3><b>Top 10 Positive Words</b></h3>
                         <ul>
