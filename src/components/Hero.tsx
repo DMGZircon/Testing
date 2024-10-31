@@ -61,18 +61,19 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                     ...tagalogWords
                 });
 
-                // Analyze comments
-                const analyzed = result.map((commentObj: { message: string }) => {
-                    const analysis = sentiment.analyze(commentObj.message, { language: 'custom' });
-                    return {
-                        comment: commentObj.message,
-                        score: analysis.score,
-                        comparative: analysis.comparative,
-                        positive: analysis.positive,
-                        negative: analysis.negative,
-                        sentiment: analysis.score > 0 ? 'Positive' : analysis.score < 0 ? 'Negative' : 'Neutral',
-                    };
-                });
+               // Analyze comments with case-insensitive approach
+                    const analyzed = result.map((commentObj: { message: string }) => {
+                        const normalizedMessage = commentObj.message.toLowerCase(); // Normalize to lowercase
+                        const analysis = sentiment.analyze(normalizedMessage, { language: 'custom' });
+                        return {
+                            comment: commentObj.message, // Keep original message for display
+                            score: analysis.score,
+                            comparative: analysis.comparative,
+                            positive: analysis.positive,
+                            negative: analysis.negative,
+                            sentiment: analysis.score > 0 ? 'Positive' : analysis.score < 0 ? 'Negative' : 'Neutral',
+                        };
+                    });
                 
                 setAnalyzedComments(analyzed);
                 analyzeOverallResults(analyzed);
