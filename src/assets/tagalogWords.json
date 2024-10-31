@@ -1,205 +1,262 @@
-{
-    "labels": {
-      "tanga": -2,
-      "sira ulo": -3,
-      "buwisit": -2,
-      "bastard": -3,
-      "mahal": 3,
-      "salamat": 2,
-      "kaibigan": 2,
-      "tulong": 2,
-      "pagsasama": 3,
-      "matapat": 3,
-      "buwis-buhay": -1,
-      "walang kwenta": -3,
-      "saya": 2,
-      "galit": -2,
-      "tiwala": 2,
-      "gwapo": 3,
-      "ganda": 3,
-      "gago": -3,
-      "puta": -3,
-      "putang ina": -3,
-      "gago ka": -3,
-      "hayop ka": -3,
-      "gahaman": -2,
-      "yabang": -2,
-      "maarte": -2,
-      "kupal": -3,
-      "peste": -3,
-      "galing": 3,
-      "mahal kita": 3,
-      "masakit": -2,
-      "nakakainis": -2,
-      "nakakasama ng loob": -2,
-      "nakakabahala": -2,
-      "nakakabuwisit": -2,
-      "nakakagigil": -2,
-      "nakakatawa": 2,
-      "nakakatuwang": 2,
-      "nakakatuwa": 2,
-      "nakakagulat": -1,
-      "nakakabagot": -2,
-      "mahirap": -1,
-      "malaki": 1,
-      "maliit": -1,
-      "madali": 1,
-      "mahaba": 1,
-      "maikli": -1,
-      "murah": 2,
-      "mahal kayo": 3,
-      "masyadong mahal": -2,
-      "mapusok": -2,
-      "matigas ang ulo": -2,
-      "mapagmahal": 3,
-      "mapagkumbaba": 2,
-      "mapagpatawad": 2,
-      "mapagpanggap": -2,
-      "mapagmataas": -2,
-      "mapagmataas na": -2,
-          "mariposa": 2,
-          "palaka": -1,
-          "ulap": 1,
-          "bulkan": -2,
-          "malusog": 2,
-          "bugso": -1,
-          "lagok": -2,
-          "ilog": 1,
-          "pangil": -1,
-          "biyaya": 3,
-          "aral": 2,
-          "laro": 2,
-          "tulog": 1,
-          "gutom": -2,
-          "maayos": 2,
-          "basag": -2,
-          "sigaw": -1,
-          "awit": 2,
-          "hagis": -1,
-          "kadiri": -3,
-          "halimuyak": 2,
-          "kulay": 1,
-          "kadena": -1,
-          "timpla": 1,
-          "tamis": 2,
-          "malakas": 2,
-          "mahina": -1,
-          "hugot": -2,
-          "dagok": -1,
-          "tagos": -2,
-          "mabuti": 3,
-          "lambot": 1,
-          "gigil": -1,
-          "sikip": -1,
-          "malinis": 2,
-          "marumi": -2,
-          "bangis": -2,
-          "alat": -1,
-          "halok": -1,
-          "masaya": 2,
-          "malungkot": -2,
-          "akyat": 1,
-          "buhos": -1,
-          "panaginip": 1,
-          "makisig": 3,
-          "dumilim": -1,
-          "tanglaw": 2,
-          "kagat": -1,
-          "malupit": -3,
-          "bilog": 1,
-          "putol": -1,
-          "bulok": -2,
-          "masarap": 3,
-          "nakakasuka": -3,
-          "ulam": 1,
-          "pagpag": -1,
-          "mabango": 2,
-          "mabaho": -2,
-          "bulaklak": 2,
-          "amoy": 1,
-          "alikabok": -1,
-          "maganda": 3,
-          "pangit": -2,
-          "kulubot": -1,
-          "balbon": -1,
-          "buhok": 1,
-          "mabait": 2,
-          "masama": -3,
-          "malambing": 2,
-          "mainitin": -1,
-          "malamig": 1,
-          "matalino": 3,
-          "bobo": -2,
-          "matalas": 1,
-          "bulilit": -1,
-          "mataba": -1,
-          "mabilis": 2,
-          "mabagal": -1,
-          "matulin": 2,
-          "madikit": -1,
-          "mahinhin": 1,
-          "mabusisi": -1,
-          "mabuting-loob": 3,
-          "madiskarte": 2,
-          "madungis": -2,
-          "madakila": 2,
-          "masipag": 3,
-          "tamad": -2,
-          "matiyaga": 2,
-          "madilig": 1,
-          "maliutin": -1,
-          "tangina": -4,
-          "putangina": -4,
-          "mamatay": -2,
-          "siraulo": -3,
-          "kingina": -4,
-          "adik":-1,
-          "basura": -2,
-          "napaka-mahusay": 5,
-          "sulit": 4,
-          "maaasahan": 4,
-          "komportable": 4,
-          "maaliwalas": 3,
-          "matibay": 4,
-          "hindi maganda": -3,
-          "hindi sulit": -4,
-          "mahirap gamitin": -3,
-          "masakit sa ulo": -3,
-          "sira": -5,
-          "malabo": -3,
-          "hindi maaasahan": -4,
-          "nawawalan ng bisa": -4,
-          "kakaiba": 2,
-          "nakakaaliw": 4,
-          "kaakit-akit": 4,
-          "hindi maganda ang kalidad": -5,
-          "puno ng sorpresa": 4,
-          "nakakabighani": 4,
-          "mura": 3,
-          "matamis": 4,
-          "malasa": 5,
-          "hindi sumasang-ayon": -2,
-          "kakaibang karanasan": 3,
-          "mahirap abutin": -2,
-          "napakasarap": 5,
-          "hindi maganda ang packaging": -3,
-          "magandang serbisyo": 4,
-          "hindi nagustuhan": -4,
-          "kapag hindi nasiyahan": -4,
-          "mabilis na serbisyo": 4,
-          "maligayang karanasan": 5,
-          "hindi ito ang inaasahan": -3,
-          "napaka-efektibo": 5,
-          "hindi ako masaya": -5,
-          "mumurahin": -2,
-          "nakakadismaya": -4,
-          "marupok": -2,
-          "perpekto ":4,
-          "Not worth":-3,
-          "super fragile":-4,
-          "hindi tatagal":-1,
-          "Not recommended ":-3
-        }
+import React, { useState } from 'react';
+import Sentiment from 'sentiment';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import { TypeAnimation } from 'react-type-animation';
+import axios from 'axios';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import tagalogWords from '../assets/tagalogWords.json'; // Import Tagalog words
 
+interface IHero {
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
+    const [postID, setPostID] = useState('');
+    const [errorPostID, setErrorPostID] = useState(false);
+    const [analyzedComments, setAnalyzedComments] = useState<{
+        comment: string;
+        score: number;
+        comparative: number;
+        positive: string[];
+        negative: string[];
+        sentiment: string;
+    }[]>([]);
+    const [overallAnalysis, setOverallAnalysis] = useState<{
+        topPositiveWords: string[];
+        topNegativeWords: string[];
+        overallSentiment: string;
+        overallScore: number;
+        scoreMagnitude: number;
+        coreSentences: { comment: string; score: number; }[];
+        scoreRange: { min: number; max: number; };
+    } | null>(null);
+
+    const pageID = '432818713243101';
+    const accessToken = 'EAAZASei56b9cBO02glJ1FNT3z5yfRtvgIJ8iF2jne1Xupuo2aKWPT3nrF7vllDt7EdZBPyYowRTZC66Y632z4ZAmGhynKZCsrl29kw1pCZATTRJtVvuOJr7OEZBaGBeKcYKZBH4rvazcY0SA7GlnWYgiGgEjfA0bapXo1CRHdcGdfY9KcCIDzt5SGFZAmb9tXdZBnWO424jw8Y';
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const commentsPerPage = 5; // Number of comments per page
+
+    async function getComments(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (postID.trim() !== '') {
+            setIsLoading(true);
+            try {
+                const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}&limit=75`);
+                const result = (fetchedData.data as { data: { [key: string]: any } }).data || [];
+                
+                const sentiment = new Sentiment();
+
+                // Register custom Tagalog words
+                sentiment.registerLanguage('custom', {
+                    ...tagalogWords
+                });
+
+               // Analyze comments with case-insensitive approach
+                    const analyzed = result.map((commentObj: { message: string }) => {
+                        const normalizedMessage = commentObj.message.toLowerCase(); // Normalize to lowercase
+                        const analysis = sentiment.analyze(normalizedMessage, { language: 'custom' });
+                        return {
+                            comment: commentObj.message, // Keep original message for display
+                            score: analysis.score,
+                            comparative: analysis.comparative,
+                            positive: analysis.positive,
+                            negative: analysis.negative,
+                            sentiment: analysis.score > 0 ? 'Positive' : analysis.score < 0 ? 'Negative' : 'Neutral',
+                        };
+                    });
+                
+                setAnalyzedComments(analyzed);
+                analyzeOverallResults(analyzed);
+                setIsLoading(false);
+            } catch (error) {
+                console.error(error);
+                setIsLoading(false);
+                setErrorPostID(true);
+                setTimeout(() => setErrorPostID(false), 3000);
+            }
+        }
     }
-  
+
+    const analyzeOverallResults = (analyzed: any[]) => {
+        const positiveWordFreq: Record<string, number> = {};
+        const negativeWordFreq: Record<string, number> = {};
+        let overallScore = 0;
+        let scoreMagnitude = 0;
+
+        analyzed.forEach((comment) => {
+            overallScore += comment.score;
+            scoreMagnitude += Math.abs(comment.score);
+            comment.positive.forEach((word: string) => {
+                positiveWordFreq[word] = (positiveWordFreq[word] || 0) + 1;
+            });
+            comment.negative.forEach((word: string) => {
+                negativeWordFreq[word] = (negativeWordFreq[word] || 0) + 1;
+            });
+        });
+
+        const topPositiveWords = Object.entries(positiveWordFreq)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([word]) => word);
+
+        const topNegativeWords = Object.entries(negativeWordFreq)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([word]) => word);
+
+        const overallSentiment =
+            overallScore > 0 ? 'Positive' : overallScore < 0 ? 'Negative' : 'Neutral';
+
+        const coreSentences = analyzed
+            .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
+            .slice(0, 3);
+
+        const scoreRange = {
+            min: Math.min(...analyzed.map(c => c.score)),
+            max: Math.max(...analyzed.map(c => c.score)),
+        };
+
+        setOverallAnalysis({
+            topPositiveWords,
+            topNegativeWords,
+            overallSentiment,
+            overallScore,
+            scoreMagnitude,
+            coreSentences,
+            scoreRange,
+        });
+    };
+
+    // Pagination helpers
+    const indexOfLastComment = currentPage * commentsPerPage;
+    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+    const currentComments = analyzedComments.slice(indexOfFirstComment, indexOfLastComment);
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    return (
+        <div className="hero flex sm:pt-0 h-auto py-0 sm:px-20 mt-20 sm:mt-28 " id='home'>
+            <div className="section1 sm:w-1/2 w-full flex flex-col gap-2 px-6 py-6 sm:py-10 ">
+                <div className='mb-10'>
+                    <TypeAnimation
+                        sequence={[
+                            'Sentimental Analysis',
+                            1000,
+                            'Enter your feedback',
+                            1000,
+                            'Analyze your feelings',
+                            1000
+                        ]}
+                        wrapper="span"
+                        speed={50}
+                        className='text-3xl font-semibold'
+                        style={{ display: 'inline-block' }}
+                        repeat={Infinity}
+                    />
+                    <form onSubmit={(e) => { getComments(e) }}>
+                        <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
+                            <FormControl fullWidth>
+                                <TextField id="standard-basic" required value={postID} onChange={(e) => { setPostID(e.currentTarget.value) }}
+                                    label="Enter your post ID" variant="standard" />
+                            </FormControl>
+                        </Box>
+                        {errorPostID &&
+                        <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
+                            <FormControl fullWidth>
+                                <p className='error text-red-500 text-sm'>Your Post ID is invalid!</p>
+                            </FormControl>
+                        </Box>}
+                        <Box sx={{ minWidth: 120 }}>
+                            <button className='bg-neutral-600 text-white px-4 py-2 rounded-md text-sm font-normal' type='submit'>Submit</button>
+                        </Box>
+                    </form>
+                </div>
+
+                {currentComments.length > 0 && (
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Comment</TableCell>
+                                    <TableCell align="right">Score</TableCell>
+                                    <TableCell align="right">Comparative</TableCell>
+                                    <TableCell align="right">Positive Words</TableCell>
+                                    <TableCell align="right">Negative Words</TableCell>
+                                    <TableCell align="right">Overall Sentiment</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentComments.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell component="th" scope="row">{row.comment}</TableCell>
+                                        <TableCell align="right">{row.score}</TableCell>
+                                        <TableCell align="right">{row.comparative.toFixed(2)}</TableCell>
+                                        <TableCell align="right">{row.positive.join(', ') || '-'}</TableCell>
+                                        <TableCell align="right">{row.negative.join(', ') || '-'}</TableCell>
+                                        <TableCell align="right">{row.sentiment}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
+                
+                <div className="flex justify-center mt-4">
+                    {Array.from({ length: Math.ceil(analyzedComments.length / commentsPerPage) }, (_, index) => (
+                        <Button
+                            key={index + 1}
+                            variant={index + 1 === currentPage ? "contained" : "outlined"}
+                            onClick={() => paginate(index + 1)}
+                        >
+                            {index + 1}
+                        </Button>
+                    ))}
+                </div>
+
+                {overallAnalysis && (
+                    <div className="mt-6">
+                        {/* Overall Analysis Display */}
+                        <h1><b>Overall Analysis</b></h1>
+                        <p><b>Overall Sentiment:</b> {overallAnalysis.overallSentiment}</p>
+                        <p><b>Total Score:</b> {overallAnalysis.overallScore}</p>
+                        <p><b>Magnitude:</b> {overallAnalysis.scoreMagnitude}</p>
+                        
+                        <h3><b>Top 10 Positive Words</b></h3>
+                        <ul>
+                            {overallAnalysis.topPositiveWords.map((word, index) => (
+                                <li key={index}>{word}</li>
+                            ))}
+                        </ul>
+
+                        <h3><b>Top 10 Negative Words</b></h3>
+                        <ul>
+                            {overallAnalysis.topNegativeWords.map((word, index) => (
+                                <li key={index}>{word}</li>
+                            ))}
+                        </ul>
+
+                        <h3><b>Core Sentences</b></h3>
+                        <ul>
+                            {overallAnalysis.coreSentences.map((sentence, index) => (
+                                <li key={index}>{sentence.comment}</li>
+                            ))}
+                        </ul>
+
+                        <h3><b>Score Range</b></h3>
+                        <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
