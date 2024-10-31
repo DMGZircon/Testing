@@ -217,6 +217,34 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 {overallAnalysis && (
                     <div className="mt-6">
                         {/* Overall Analysis Display */}
+                        <h2>Overall Analysis</h2>
+                        <p>Overall Sentiment: {overallAnalysis.overallSentiment}</p>
+                        <p>Total Score: {overallAnalysis.overallScore}</p>
+                        <p>Magnitude: {overallAnalysis.scoreMagnitude}</p>
+                        
+                        <h3>Top 10 Positive Words</h3>
+                        <ul>
+                            {overallAnalysis.topPositiveWords.map((word, index) => (
+                                <li key={index}>{word}</li>
+                            ))}
+                        </ul>
+
+                        <h3>Top 10 Negative Words</h3>
+                        <ul>
+                            {overallAnalysis.topNegativeWords.map((word, index) => (
+                                <li key={index}>{word}</li>
+                            ))}
+                        </ul>
+
+                        <h3>Core Sentences</h3>
+                        <ul>
+                            {overallAnalysis.coreSentences.map((sentence, index) => (
+                                <li key={index}>{sentence.comment}</li>
+                            ))}
+                        </ul>
+
+                        <h3>Score Range</h3>
+                        <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
                     </div>
                 )}
             </div>
