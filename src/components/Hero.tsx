@@ -50,7 +50,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         if (postID.trim() !== '') {
             setIsLoading(true);
             try {
-                const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}`);
+                const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}&limit=75`);
                 const result = (fetchedData.data as { data: { [key: string]: any } }).data || [];
                 
                 const sentiment = new Sentiment();
@@ -217,33 +217,33 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 {overallAnalysis && (
                     <div className="mt-6">
                         {/* Overall Analysis Display */}
-                        <h2>Overall Analysis</h2>
-                        <p>Overall Sentiment: {overallAnalysis.overallSentiment}</p>
-                        <p>Total Score: {overallAnalysis.overallScore}</p>
-                        <p>Magnitude: {overallAnalysis.scoreMagnitude}</p>
+                        <h1><b>Overall Analysis</b></h1>
+                        <p><b>Overall Sentiment:</b> {overallAnalysis.overallSentiment}</p>
+                        <p><b>Total Score: {overallAnalysis.overallScore}</p>
+                        <p><b>Magnitude: {overallAnalysis.scoreMagnitude}</p>
                         
-                        <h3>Top 10 Positive Words</h3>
+                        <h3><b>Top 10 Positive Words</b></h3>
                         <ul>
                             {overallAnalysis.topPositiveWords.map((word, index) => (
                                 <li key={index}>{word}</li>
                             ))}
                         </ul>
 
-                        <h3>Top 10 Negative Words</h3>
+                        <h3><b>Top 10 Negative Words</b></h3>
                         <ul>
                             {overallAnalysis.topNegativeWords.map((word, index) => (
                                 <li key={index}>{word}</li>
                             ))}
                         </ul>
 
-                        <h3>Core Sentences</h3>
+                        <h3><b>Core Sentences</b></h3>
                         <ul>
                             {overallAnalysis.coreSentences.map((sentence, index) => (
                                 <li key={index}>{sentence.comment}</li>
                             ))}
                         </ul>
 
-                        <h3>Score Range</h3>
+                        <h3><b>Score Range</b></h3>
                         <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
                     </div>
                 )}
