@@ -253,7 +253,6 @@
           "Nagustuhan": 3,
           "di nagustuhan": -3,
           "Perfect": 5,
-          "not perfect": -5,
           "taas ng presyo": -2,
           "mababa ng presyo": 2,
           "sakto": 0,
@@ -386,8 +385,10 @@
           "poor packaging": -3,
           "neat": 3,
           "worth buying": 4,
-          "not worth buying": -4
-    
+          "not worth buying": -4,
+          "Napaka-responsive": 4,
+          "Napaka-responsive na": 4,
+          "Napaka-responsive ang serbisyo": 4
         }
 
     }
