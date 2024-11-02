@@ -13,6 +13,7 @@ import {
   TableRow,
   Card,
   CardContent,
+  Button,
 } from '@mui/material';
 import { Line } from 'react-chartjs-2';
 import {
@@ -26,6 +27,7 @@ import {
   Legend
 } from 'chart.js';
 import { AnalysisResult } from '../types/AnalysisResult';
+import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(
   CategoryScale,
@@ -62,10 +64,12 @@ export const Admin = () => {
     recall: '88%',
     formula: 'sentiment = analyze(text)'
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Load analysis history from localStorage
     const history = JSON.parse(localStorage.getItem('analysisHistory') || '[]');
+    console.log('Loaded Analysis History:', history);
     setAnalysisHistory(history);
   }, []);
 
@@ -98,19 +102,33 @@ export const Admin = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    console.log(event); 
+    console.log(event);
+    console.log(handleChange); 
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth'); // Clear authentication
+    navigate('/'); // Redirect to homepage
   };
 
   return (
     <Box sx={{ width: '100%', padding: 3 }}>
       <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
         <Typography variant="h4" gutterBottom>Admin Dashboard</Typography>
-        <Tabs value={value} onChange={handleChange}>
+        <Tabs value={value} onChange={(_, newValue) => setValue(newValue)}>
           <Tab label="Algorithm Info" />
           <Tab label="Post History" />
           <Tab label="Top Posts" />
           <Tab label="Analytics" />
         </Tabs>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleLogout}
+          sx={{ marginTop: 2 }}
+        >
+          Logout
+        </Button>
       </Paper>
 
       <TabPanel value={value} index={0}>

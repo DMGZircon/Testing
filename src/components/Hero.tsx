@@ -15,6 +15,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import tagalogWords from '../assets/tagalogWords.json'; // Import Tagalog words
 import { AnalysisResult } from '../types/AnalysisResult';
+import { useNavigate } from 'react-router-dom';
 
 interface IHero {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,7 +59,8 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             scoreMagnitude: overallAnalysis?.scoreMagnitude || 0
         };
         console.log(analyzed);
-
+        console.log('Saving Analysis Result:', result);
+        
         // Get existing results from localStorage
         const existingResults = JSON.parse(localStorage.getItem('analysisHistory') || '[]');
         
@@ -167,6 +169,8 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     const currentComments = analyzedComments.slice(indexOfFirstComment, indexOfLastComment);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    const navigate = useNavigate();
 
     return (
         <div className="hero flex sm:pt-0 h-auto py-0 sm:px-20 mt-20 sm:mt-28 " id='home'>
@@ -280,6 +284,16 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                         <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
                     </div>
                 )}
+
+                <Box sx={{ minWidth: 120, marginTop: "1em" }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => navigate('/admin-login')}
+                    >
+                        Admin Login
+                    </Button>
+                </Box>
             </div>
         </div>
     );
