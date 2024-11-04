@@ -48,7 +48,9 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const commentsPerPage = 5; // Number of comments per page
 
-    const saveAnalysisResult = (analyzed: any[], postId: string) => {
+
+    
+    const saveAnalysisResult = async (analyzed: any[], postId: string) => {
         const result: AnalysisResult = {
             postId,
             date: new Date().toISOString(),
@@ -58,17 +60,23 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             topNegativeWords: overallAnalysis?.topNegativeWords || [],
             scoreMagnitude: overallAnalysis?.scoreMagnitude || 0
         };
-        console.log(analyzed);
-        console.log('Saving Analysis Result:', result);
-        
-        // Get existing results from localStorage
-        const existingResults = JSON.parse(localStorage.getItem('analysisHistory') || '[]');
-        
-        // Add new result
-        existingResults.push(result);
-        
-        // Save back to localStorage
-        localStorage.setItem('analysisHistory', JSON.stringify(existingResults));
+        console.log('Saving Analyzed Result:', analyzed);
+        console.log('Saving Analyzed Result:', result);
+
+        try {
+            await axios.post('http://localhost:5000/api/saveResult', {
+                postId,
+                date: new Date().toISOString(),
+                overallScore: overallAnalysis?.overallScore || 0,
+                overallSentiment: overallAnalysis?.overallSentiment || 'Neutral',
+                topPositiveWords: overallAnalysis?.topPositiveWords || [],
+                topNegativeWords: overallAnalysis?.topNegativeWords || [],
+                scoreMagnitude: overallAnalysis?.scoreMagnitude || 0
+            });
+            console.log('Analysis result saved to the database successfully.');
+        } catch (error) {
+            console.error('Error saving analysis result:', error);
+        }
     };
 
     async function getComments(e: React.FormEvent<HTMLFormElement>) {

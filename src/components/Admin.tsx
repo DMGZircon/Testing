@@ -14,6 +14,7 @@ import {
   Card,
   CardContent,
   Button,
+  TextField,
 } from '@mui/material';
 import { Line } from 'react-chartjs-2';
 import {
@@ -28,6 +29,7 @@ import {
 } from 'chart.js';
 import { AnalysisResult } from '../types/AnalysisResult';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios for API requests
 
 ChartJS.register(
   CategoryScale,
@@ -62,21 +64,65 @@ export const Admin = () => {
     accuracy: '85%',
     precision: '82%',
     recall: '88%',
-    formula: 'sentiment = analyze(text)'
+    formula: 'sentiment = analyze(text)',
   });
+  const [newPostId, setNewPostId] = useState('');
+  const [newOverallScore, setNewOverallScore] = useState<number>(0);
+  const [newOverallSentiment, setNewOverallSentiment] = useState('');
   const navigate = useNavigate();
 
+  // Fetch analysis history on component mount
   useEffect(() => {
-    // Load analysis history from localStorage
-    const history = JSON.parse(localStorage.getItem('analysisHistory') || '[]');
-    console.log('Loaded Analysis History:', history);
-    setAnalysisHistory(history);
+    const fetchAnalysisHistory = async () => {
+      try {
+        const response = await axios.get<AnalysisResult[]>('/api/getResults');
+        console.log('Fetched analysis history:', response.data); // Debugging line
+        if (Array.isArray(response.data)) {
+          setAnalysisHistory(response.data);
+        } else {
+          console.error('Expected an array, but got:', response.data);
+          setAnalysisHistory([]); // Set to empty array if the data isn't as expected
+        }
+      } catch (error) {
+        console.error('Error fetching analysis history:', error);
+        setAnalysisHistory([]); // Fallback to empty array on error
+      }
+    };
+    fetchAnalysisHistory();
   }, []);
 
-  // Calculate posts per week for the chart
+  // Handle new post submission
+  const handleNewPostSubmission = async () => {
+    const newResult: AnalysisResult = {
+      postId: newPostId,
+      date: new Date().toISOString(),
+      overallScore: newOverallScore,
+      overallSentiment: newOverallSentiment,
+      topPositiveWords: [], // Default value for top positive words
+      topNegativeWords: [], // Default value for top negative words
+      scoreMagnitude: 0,    // Default value for score magnitude
+    };
+
+    try {
+      await axios.post('/api/saveResult', newResult); // Post to the saveResult endpoint
+      setAnalysisHistory((prevHistory) => [...prevHistory, newResult]); // Update state with the new result
+      // Clear input fields after submission
+      setNewPostId('');
+      setNewOverallScore(0);
+      setNewOverallSentiment('');
+    } catch (error) {
+      console.error('Error submitting new post:', error);
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleNewPostSubmission();
+  };
+
   const getWeeklyPostCounts = () => {
     const weekCounts: { [key: string]: number } = {};
-    
+
     analysisHistory.forEach(result => {
       const date = new Date(result.date);
       const weekKey = `${date.getFullYear()}-W${getWeekNumber(date)}`;
@@ -100,14 +146,12 @@ export const Admin = () => {
     }]
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    console.log(event);
-    console.log(handleChange); 
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuth'); // Clear authentication
+    // Handle logout logic here (if needed)
     navigate('/'); // Redirect to homepage
   };
 
@@ -115,7 +159,7 @@ export const Admin = () => {
     <Box sx={{ width: '100%', padding: 3 }}>
       <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
         <Typography variant="h4" gutterBottom>Admin Dashboard</Typography>
-        <Tabs value={value} onChange={(_, newValue) => setValue(newValue)}>
+        <Tabs value={value} onChange={handleChange}>
           <Tab label="Algorithm Info" />
           <Tab label="Post History" />
           <Tab label="Top Posts" />
@@ -146,6 +190,35 @@ export const Admin = () => {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
+        <form onSubmit={handleSubmit}>
+          <Paper sx={{ padding: 2, marginBottom: 2 }}>
+            <Typography variant="h6">Add New Analysis Result</Typography>
+            <TextField
+              label="Post ID"
+              value={newPostId}
+              onChange={(e) => setNewPostId(e.target.value)}
+              required
+              sx={{ marginRight: 1 }}
+            />
+            <TextField
+              label="Overall Score"
+              type="number"
+              value={newOverallScore}
+              onChange={(e) => setNewOverallScore(Number(e.target.value))}
+              required
+              sx={{ marginRight: 1 }}
+            />
+            <TextField
+              label="Overall Sentiment"
+              value={newOverallSentiment}
+              onChange={(e) => setNewOverallSentiment(e.target.value)}
+              required
+              sx={{ marginRight: 1 }}
+            />
+            <Button type="submit" variant="contained" color="primary">Submit New Result</Button>
+          </Paper>
+        </form>
+
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -199,6 +272,8 @@ export const Admin = () => {
       </TabPanel>
 
       <TabPanel value={value} index={3}>
+       
+
         <Paper sx={{ p: 2 }}>
           <Line data={chartData} />
         </Paper>
@@ -212,6 +287,6 @@ function getWeekNumber(date: Date) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
-} 
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+}

@@ -14,7 +14,10 @@
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^5.16.7",
     "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
     "chart.js": "^4.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-d3-speedometer": "^2.2.1",
@@ -22,7 +25,9 @@
     "react-router-dom": "^6.27.0",
     "react-spinners": "^0.14.1",
     "react-type-animation": "^3.2.0",
-    "sentiment": "^5.0.2"
+    "sentiment": "^5.0.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
