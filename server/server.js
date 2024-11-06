@@ -11,7 +11,6 @@ const PORT = 5000;
 app.use(bodyParser.json());
 app.use(cors());
 
-
 // Endpoint to save analysis results
 app.post('/api/saveResult', async (req, res) => {
   const { postId, date, overallScore, overallSentiment } = req.body;
@@ -40,6 +39,56 @@ app.get('/api/getResults', async (req, res) => {
   } catch (error) {
     console.error('Error retrieving results:', error.message);
     res.status(500).send('Error retrieving results');
+  }
+});
+
+// New endpoint to get top posts
+app.get('/api/getTopPosts', async (req, res) => {
+  try {
+    const db = await openDb();
+    // Modify the query to fit your logic for determining "top posts"
+    const topPosts = await db.all(`
+      SELECT postId, date, overallScore, overallSentiment 
+      FROM analysis_results 
+      ORDER BY overallScore DESC 
+      LIMIT 10
+    `);
+    res.status(200).json(topPosts);
+    await db.close();
+  } catch (error) {
+    console.error('Error fetching top posts:', error.message);
+    res.status(500).send('Error fetching top posts');
+  }
+});
+
+// Endpoint to delete a specific post
+app.delete('/api/deletePost/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const db = await openDb();
+    const result = await db.run(`DELETE FROM analysis_results WHERE id = ?`, [id]);
+    if (result.changes === 1) {
+      res.status(200).send(`Post with ID ${id} deleted successfully`);
+    } else {
+      res.status(404).send(`Post with ID ${id} not found`);
+    }
+    await db.close();
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+// Endpoint to delete all posts
+app.delete('/api/deleteAllPosts', async (req, res) => {
+  try {
+    const db = await openDb();
+    await db.run(`DELETE FROM analysis_results`);
+    res.status(200).send('All posts deleted successfully');
+    await db.close();
+  } catch (error) {
+    console.error('Error deleting all posts:', error.message);
+    res.status(500).send('Error deleting all posts');
   }
 });
 

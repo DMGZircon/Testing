@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sentiment from 'sentiment';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -13,7 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import tagalogWords from '../assets/tagalogWords.json'; // Import Tagalog words
+import tagalogWords from '../assets/tagalogWords.json';
 import { AnalysisResult } from '../types/AnalysisResult';
 import { useNavigate } from 'react-router-dom';
 
@@ -43,13 +43,17 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     } | null>(null);
 
     const pageID = '432818713243101';
-    const accessToken = 'EAAZASei56b9cBO02glJ1FNT3z5yfRtvgIJ8iF2jne1Xupuo2aKWPT3nrF7vllDt7EdZBPyYowRTZC66Y632z4ZAmGhynKZCsrl29kw1pCZATTRJtVvuOJr7OEZBaGBeKcYKZBH4rvazcY0SA7GlnWYgiGgEjfA0bapXo1CRHdcGdfY9KcCIDzt5SGFZAmb9tXdZBnWO424jw8Y';
+    const accessToken = 'EAAZASei56b9cBO02glJ1FNT3z5yfRtvgIJ8iF2jne1Xupuo2aKWPT3nrF7vllDt7EdZBPyYowRTZC66Y632z4ZAmGhynKZCsrl29kw1pCZATTRJtVvuOJr7OEZBaGBeKcYKZBH4rvazcY0SA7GlnWYgiGgEjfA0bapXo1CRHdcGdfY9KcCIDzt5SGFZAmb9tXdZBnWO424jw8Y'; // Replace with your actual token
 
     const [currentPage, setCurrentPage] = useState(1);
-    const commentsPerPage = 5; // Number of comments per page
+    const commentsPerPage = 5;
 
+    useEffect(() => {
+        if (overallAnalysis) {
+            saveAnalysisResult(analyzedComments, postID);
+        }
+    }, [overallAnalysis]);
 
-    
     const saveAnalysisResult = async (analyzed: any[], postId: string) => {
         const result: AnalysisResult = {
             postId,
@@ -60,57 +64,43 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             topNegativeWords: overallAnalysis?.topNegativeWords || [],
             scoreMagnitude: overallAnalysis?.scoreMagnitude || 0
         };
-        console.log('Saving Analyzed Result:', analyzed);
-        console.log('Saving Analyzed Result:', result);
-
+        console.log(analyzed);
         try {
-            await axios.post('http://localhost:5000/api/saveResult', {
-                postId,
-                date: new Date().toISOString(),
-                overallScore: overallAnalysis?.overallScore || 0,
-                overallSentiment: overallAnalysis?.overallSentiment || 'Neutral',
-                topPositiveWords: overallAnalysis?.topPositiveWords || [],
-                topNegativeWords: overallAnalysis?.topNegativeWords || [],
-                scoreMagnitude: overallAnalysis?.scoreMagnitude || 0
-            });
+            await axios.post('http://localhost:5000/api/saveResult', result);
             console.log('Analysis result saved to the database successfully.');
         } catch (error) {
             console.error('Error saving analysis result:', error);
         }
     };
 
-    async function getComments(e: React.FormEvent<HTMLFormElement>) {
+    const getComments = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (postID.trim() !== '') {
             setIsLoading(true);
             try {
                 const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}&limit=75`);
                 const result = (fetchedData.data as { data: { [key: string]: any } }).data || [];
-                
-                const sentiment = new Sentiment();
 
-                // Register custom Tagalog words
+                const sentiment = new Sentiment();
                 sentiment.registerLanguage('custom', {
                     ...tagalogWords
                 });
 
-               // Analyze comments with case-insensitive approach
-                    const analyzed = result.map((commentObj: { message: string }) => {
-                        const normalizedMessage = commentObj.message.toLowerCase(); // Normalize to lowercase
-                        const analysis = sentiment.analyze(normalizedMessage, { language: 'custom' });
-                        return {
-                            comment: commentObj.message, // Keep original message for display
-                            score: analysis.score,
-                            comparative: analysis.comparative,
-                            positive: analysis.positive,
-                            negative: analysis.negative,
-                            sentiment: analysis.score > 0 ? 'Positive' : analysis.score < 0 ? 'Negative' : 'Neutral',
-                        };
-                    });
-                
+                const analyzed = result.map((commentObj: { message: string }) => {
+                    const normalizedMessage = commentObj.message.toLowerCase();
+                    const analysis = sentiment.analyze(normalizedMessage, { language: 'custom' });
+                    return {
+                        comment: commentObj.message,
+                        score: analysis.score,
+                        comparative: analysis.comparative,
+                        positive: analysis.positive,
+                        negative: analysis.negative,
+                        sentiment: analysis.score > 0 ? 'Positive' : analysis.score < 0 ? 'Negative' : 'Neutral',
+                    };
+                });
+
                 setAnalyzedComments(analyzed);
                 analyzeOverallResults(analyzed);
-                saveAnalysisResult(analyzed, postID);
                 setIsLoading(false);
             } catch (error) {
                 console.error(error);
@@ -119,7 +109,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                 setTimeout(() => setErrorPostID(false), 3000);
             }
         }
-    }
+    };
 
     const analyzeOverallResults = (analyzed: any[]) => {
         const positiveWordFreq: Record<string, number> = {};
@@ -148,13 +138,8 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             .slice(0, 10)
             .map(([word]) => word);
 
-        const overallSentiment =
-            overallScore > 0 ? 'Positive' : overallScore < 0 ? 'Negative' : 'Neutral';
-
-        const coreSentences = analyzed
-            .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
-            .slice(0, 3);
-
+        const overallSentiment = overallScore > 0 ? 'Positive' : overallScore < 0 ? 'Negative' : 'Neutral';
+        const coreSentences = analyzed.sort((a, b) => Math.abs(b.score) - Math.abs(a.score)).slice(0, 3);
         const scoreRange = {
             min: Math.min(...analyzed.map(c => c.score)),
             max: Math.max(...analyzed.map(c => c.score)),
@@ -171,7 +156,6 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         });
     };
 
-    // Pagination helpers
     const indexOfLastComment = currentPage * commentsPerPage;
     const indexOfFirstComment = indexOfLastComment - commentsPerPage;
     const currentComments = analyzedComments.slice(indexOfFirstComment, indexOfLastComment);
@@ -181,119 +165,9 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="hero flex sm:pt-0 h-auto py-0 sm:px-20 mt-20 sm:mt-28 " id='home'>
-            <div className="section1 sm:w-1/2 w-full flex flex-col gap-2 px-6 py-6 sm:py-10 ">
-                <div className='mb-10'>
-                    <TypeAnimation
-                        sequence={[
-                            'Sentimental Analysis',
-                            1000,
-                            'Enter your feedback',
-                            1000,
-                            'Analyze your feelings',
-                            1000
-                        ]}
-                        wrapper="span"
-                        speed={50}
-                        className='text-3xl font-semibold'
-                        style={{ display: 'inline-block' }}
-                        repeat={Infinity}
-                    />
-                    <form onSubmit={(e) => { getComments(e) }}>
-                        <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
-                            <FormControl fullWidth>
-                                <TextField id="standard-basic" required value={postID} onChange={(e) => { setPostID(e.currentTarget.value) }}
-                                    label="Enter your post ID" variant="standard" />
-                            </FormControl>
-                        </Box>
-                        {errorPostID &&
-                        <Box sx={{ minWidth: 120, marginBottom: "0.5em" }}>
-                            <FormControl fullWidth>
-                                <p className='error text-red-500 text-sm'>Your Post ID is invalid!</p>
-                            </FormControl>
-                        </Box>}
-                        <Box sx={{ minWidth: 120 }}>
-                            <button className='bg-neutral-600 text-white px-4 py-2 rounded-md text-sm font-normal' type='submit'>Submit</button>
-                        </Box>
-                    </form>
-                </div>
-
-                {currentComments.length > 0 && (
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Comment</TableCell>
-                                    <TableCell align="right">Score</TableCell>
-                                    <TableCell align="right">Comparative</TableCell>
-                                    <TableCell align="right">Positive Words</TableCell>
-                                    <TableCell align="right">Negative Words</TableCell>
-                                    <TableCell align="right">Overall Sentiment</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {currentComments.map((row, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell component="th" scope="row">{row.comment}</TableCell>
-                                        <TableCell align="right">{row.score}</TableCell>
-                                        <TableCell align="right">{row.comparative.toFixed(2)}</TableCell>
-                                        <TableCell align="right">{row.positive.join(', ') || '-'}</TableCell>
-                                        <TableCell align="right">{row.negative.join(', ') || '-'}</TableCell>
-                                        <TableCell align="right">{row.sentiment}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                )}
-                
-                <div className="flex justify-center mt-4">
-                    {Array.from({ length: Math.ceil(analyzedComments.length / commentsPerPage) }, (_, index) => (
-                        <Button
-                            key={index + 1}
-                            variant={index + 1 === currentPage ? "contained" : "outlined"}
-                            onClick={() => paginate(index + 1)}
-                        >
-                            {index + 1}
-                        </Button>
-                    ))}
-                </div>
-
-                {overallAnalysis && (
-                    <div className="mt-6">
-                        {/* Overall Analysis Display */}
-                        <h1><b>Overall Analysis</b></h1>
-                        <p><b>Overall Sentiment:</b> {overallAnalysis.overallSentiment}</p>
-                        <p><b>Total Score:</b> {overallAnalysis.overallScore}</p>
-                        <p><b>Magnitude:</b> {overallAnalysis.scoreMagnitude}</p>
-                        
-                        <h3><b>Top 10 Positive Words</b></h3>
-                        <ul>
-                            {overallAnalysis.topPositiveWords.map((word, index) => (
-                                <li key={index}>{word}</li>
-                            ))}
-                        </ul>
-
-                        <h3><b>Top 10 Negative Words</b></h3>
-                        <ul>
-                            {overallAnalysis.topNegativeWords.map((word, index) => (
-                                <li key={index}>{word}</li>
-                            ))}
-                        </ul>
-
-                        <h3><b>Core Sentences</b></h3>
-                        <ul>
-                            {overallAnalysis.coreSentences.map((sentence, index) => (
-                                <li key={index}>{sentence.comment}</li>
-                            ))}
-                        </ul>
-
-                        <h3><b>Score Range</b></h3>
-                        <p>Min: {overallAnalysis.scoreRange.min}, Max: {overallAnalysis.scoreRange.max}</p>
-                    </div>
-                )}
-
-                <Box sx={{ minWidth: 120, marginTop: "1em" }}>
+        <div className="hero flex flex-col sm:flex-row justify-center items-center py-12 bg-gray-100 text-gray-800" id='home'>
+            <div className="section1 sm:w-1/2 w-full flex flex-col gap-6 px-6">
+            <Box sx={{ minWidth: 120, marginTop: "1em" }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -302,6 +176,95 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                         Admin Login
                     </Button>
                 </Box>
+                <TypeAnimation
+                    sequence={['Sentiment Analysis', 1000, 'Enter your feedback', 1000, 'Analyze your feelings', 1000]}
+                    wrapper="span"
+                    speed={50}
+                    className='text-4xl font-bold text-center'
+                    style={{ display: 'inline-block' }}
+                    repeat={Infinity}
+                />
+                <form onSubmit={getComments} className="flex flex-col">
+                    <Box sx={{ marginBottom: "1em" }}>
+                        <FormControl fullWidth>
+                            <TextField
+                                id="standard-basic"
+                                required
+                                value={postID}
+                                onChange={(e) => setPostID(e.currentTarget.value)}
+                                label="Enter your post ID"
+                                variant="outlined"
+                                color="primary"
+                            />
+                        </FormControl>
+                    </Box>
+                    {errorPostID && (
+                        <Box sx={{ marginBottom: "1em" }}>
+                            <FormControl fullWidth>
+                                <p className='error text-red-500 text-sm'>Your Post ID is invalid!</p>
+                            </FormControl>
+                        </Box>
+                    )}
+                    <Box sx={{ minWidth: 120 }}>
+                        <Button className='bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-normal' type='submit'>Submit</Button>
+                    </Box>
+                </form>
+
+                {currentComments.length > 0 && (
+                    <TableContainer component={Paper} sx={{ marginTop: "2em" }}>
+                        <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Comment</TableCell>
+                                    <TableCell align="right">Score</TableCell>
+                                    <TableCell align="right">Sentiment</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentComments.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell component="th" scope="row">{row.comment}</TableCell>
+                                        <TableCell align="right">{row.score}</TableCell>
+                                        <TableCell align="right">{row.sentiment}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
+
+                <div className="flex justify-center mt-4">
+                    {Array.from({ length: Math.ceil(analyzedComments.length / commentsPerPage) }, (_, index) => (
+                        <Button
+                            key={index + 1}
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => paginate(index + 1)}
+                            className={`mx-1 ${currentPage === index + 1 ? 'bg-gray-700 text-white' : 'text-gray-800'}`}
+                        >
+                            {index + 1}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="section2 sm:w-1/2 w-full flex flex-col gap-4 px-6">
+                {overallAnalysis && (
+                    <div className="analysis-results">
+                        <h2 className='text-2xl font-bold'>Overall Analysis</h2>
+                        <p>Overall Score: {overallAnalysis.overallScore}</p>
+                        <p>Overall Sentiment: {overallAnalysis.overallSentiment}</p>
+                        <p>Top Positive Words: {overallAnalysis.topPositiveWords.join(', ')}</p>
+                        <p>Top Negative Words: {overallAnalysis.topNegativeWords.join(', ')}</p>
+                        <p>Score Magnitude: {overallAnalysis.scoreMagnitude}</p>
+                        <h3 className='text-xl font-semibold'>Core Sentences:</h3>
+                        <ul>
+                            {overallAnalysis.coreSentences.map((sentence, index) => (
+                                <li key={index}>{sentence.comment} (Score: {sentence.score})</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     );
