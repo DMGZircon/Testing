@@ -15,7 +15,6 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import tagalogWords from '../assets/tagalogWords.json';
 import { AnalysisResult } from '../types/AnalysisResult';
-import { useNavigate } from 'react-router-dom';
 
 interface IHero {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -162,20 +161,10 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    const navigate = useNavigate();
 
     return (
         <div className="hero flex flex-col sm:flex-row justify-center items-center py-12 bg-gray-100 text-gray-800" id='home'>
             <div className="section1 sm:w-1/2 w-full flex flex-col gap-6 px-6">
-            <Box sx={{ minWidth: 120, marginTop: "1em" }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => navigate('/admin-login')}
-                    >
-                        Admin Login
-                    </Button>
-                </Box>
                 <TypeAnimation
                     sequence={['Sentiment Analysis', 1000, 'Enter your feedback', 1000, 'Analyze your feelings', 1000]}
                     wrapper="span"
@@ -215,9 +204,9 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                         <Table sx={{ minWidth: 650 }} aria-label="sentiment analysis table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Comment</TableCell>
-                                    <TableCell align="right">Score</TableCell>
-                                    <TableCell align="right">Sentiment</TableCell>
+                                    <TableCell><b>Comment</b></TableCell>
+                                    <TableCell align="right"><b>Score</b></TableCell>
+                                    <TableCell align="right"><b>Sentiment</b></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -225,14 +214,25 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
                                     <TableRow key={index}>
                                         <TableCell component="th" scope="row">{row.comment}</TableCell>
                                         <TableCell align="right">{row.score}</TableCell>
-                                        <TableCell align="right">{row.sentiment}</TableCell>
+                                        <TableCell
+                                            align="right"
+                                            style={{
+                                                backgroundColor:
+                                                    row.sentiment === 'Positive' ? '#99ff99' : 
+                                                    row.sentiment === 'Negative' ? '#ff8080' : 
+                                                    '#ffff99',
+                                                color: '#212529',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            {row.sentiment}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
                 )}
-
                 <div className="flex justify-center mt-4">
                     {Array.from({ length: Math.ceil(analyzedComments.length / commentsPerPage) }, (_, index) => (
                         <Button
