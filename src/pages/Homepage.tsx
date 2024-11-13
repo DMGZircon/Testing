@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { About } from "../components/About";
+import { HowToUse } from "../components/About";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";
@@ -22,7 +22,7 @@ export const Homepage = () => {
             <Header />
             <div className="mt-20"> {/* Ensure content is below the fixed Header */}
                 <Hero setIsLoading={setIsLoading} />
-                <About />
+                <HowToUse />
                 <Footer />
             </div>
         </>

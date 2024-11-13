@@ -1,114 +1,78 @@
-export const About = () => {
+export const HowToUse = () => {
   return (
     <>
-      <div className="about flex py-5 sm:py-0" id="about">
-        <div className="section1 sm:w-1/2 sm:grid place-content-center px-5 hidden">
-          <img src="/machine_learning.webp"
-            className="w-[35rem] h-[35rem] object-contain rounded-3xl" alt="Machine Learning Image" />
+      <div className="how-to-use flex py-5 sm:py-0" id="how-to-use">
+        <div className="section1 sm:w-1/2 sm:grid place-content-center px-5">
+          <img
+            src="/get-post-id.jpg" // Replace with the appropriate image file path for instructions
+            className="w-[35rem] h-[35rem] object-contain rounded-3xl"
+            alt="Getting Post ID"
+          />
         </div>
         <div className="section2 sm:w-1/2 flex flex-col gap-3 justify-center px-6 sm:pr-10">
-          <h1 className="text-3xl font-bold">ABOUT</h1>
-          <p className="text-xl font-semibold">Sentiment Analysis App</p>
-          <p className="text-lg">Our sentiment analysis app makes it easy to gauge the emotional tone of any written text. Simply enter your text into the intuitive input field, and our advanced natural language processing algorithms will instantly detect positive and negative words, providing you with a clear happiness level meter and corresponding emotion emoji.
-
-            Whether you're looking to analyze customer feedback, social media posts, or your own writing, our app puts the power of sentiment analysis at your fingertips. Powered by the trusted AFINN-165 lexicon and integrated with popular npm packages like "sentiment," our tool delivers accurate, real-time results you can trust.</p>
-          <ul className="text-lg">
-            <li className="flex gap-2">
-              <svg viewBox="0 0 24 24"
-                className="w-6 h-6"
-                fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g id="Interface / Check_All_Big">
-                    {" "}
-                    <path
-                      id="Vector"
-                      d="M7 12L11.9497 16.9497L22.5572 6.34326M2.0498 12.0503L6.99955 17M17.606 6.39355L12.3027 11.6969"
-                      stroke="#228b22"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                  </g>{" "}
-                </g>
-              </svg>
-
-              Supports both Tagalog and English text</li>
-            <li className="flex gap-2">
-              <svg viewBox="0 0 24 24"
-                className="w-6 h-6"
-                fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g id="Interface / Check_All_Big">
-                    {" "}
-                    <path
-                      id="Vector"
-                      d="M7 12L11.9497 16.9497L22.5572 6.34326M2.0498 12.0503L6.99955 17M17.606 6.39355L12.3027 11.6969"
-                      stroke="#228b22"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                  </g>{" "}
-                </g>
-              </svg>
-              Instantly identifies positive and negative words</li>
-
-              <li className="flex gap-2">
-              <svg viewBox="0 0 24 24"
-                className="w-6 h-6"
-                fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g id="Interface / Check_All_Big">
-                    {" "}
-                    <path
-                      id="Vector"
-                      d="M7 12L11.9497 16.9497L22.5572 6.34326M2.0498 12.0503L6.99955 17M17.606 6.39355L12.3027 11.6969"
-                      stroke="#228b22"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                  </g>{" "}
-                </g>
-              </svg>
-              Provides a corresponding emotion emoji for visual feedback</li>
-              <li className="flex gap-2">
-              <svg viewBox="0 0 24 24"
-                className="w-6 h-6"
-                fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g id="Interface / Check_All_Big">
-                    {" "}
-                    <path
-                      id="Vector"
-                      d="M7 12L11.9497 16.9497L22.5572 6.34326M2.0498 12.0503L6.99955 17M17.606 6.39355L12.3027 11.6969"
-                      stroke="#228b22"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />{" "}
-                  </g>{" "}
-                </g>
-              </svg>
-              Clean, mobile-responsive interface for easy use on-the-go</li>
-              
-          </ul>
+          <h1 className="text-3xl font-bold">How to Use the Sentiment Analysis App</h1>
+          <p className="text-xl font-semibold">Step-by-step Guide</p>
+          <p className="text-lg">
+            Follow these simple steps to start using the sentiment analysis app and analyze Facebook comments:
+          </p>
+          {/* Step 1 */}
+          <div className="step">
+            <h2 className="text-lg font-semibold">Step 1: Get the Post ID</h2>
+            <p className="text-lg">
+              First, you need to get the Post ID of the Facebook post you want to analyze.
+              Follow these steps to get the Post ID:
+            </p>
+            <ul className="text-lg">
+            <img
+            src="/get-date.jpg" // Replace with the appropriate image file path for instructions
+            className="w-[35rem] h-[35rem] object-contain rounded-3xl"
+            alt="Getting Post ID"
+            />
+              <li>Go to the Facebook post that you want to analyze and click on the date.</li>
+              <li>Press "Right-Click to View Page Source(or in Chroms, its Ctrl+U)</li>
+              <li>Press "Ctrl+F" to search for "post_id"</li>
+              <li>The Post ID is a long string of numbers (ex. "post_id=123456789..."). Copy this number.</li>
+            </ul>
+            <img
+              src="/get-date.jpg" // Replace with the image showing where the Post ID is in the Facebook URL
+              className="w-[35rem] h-[20rem] object-contain rounded-3xl mt-4"
+              alt="Post ID Example"
+            />
+          </div>
+          {/* Step 2 */}
+          <div className="step mt-6">
+            <h2 className="text-lg font-semibold">Step 2: Paste the Post ID</h2>
+            <p className="text-lg">
+              After copying the Post ID, go back to the Sentiment Analysis app and paste it into the provided input field.
+            </p>
+            <img
+              src="/paste-post-id.jpg" // Replace with an image showing the input field
+              className="w-[35rem] h-[20rem] object-contain rounded-3xl mt-4"
+              alt="Pasting Post ID"
+            />
+          </div>
+          {/* Step 3 */}
+          <div className="step mt-6">
+            <h2 className="text-lg font-semibold">Step 3: Analyze the Sentiment</h2>
+            <p className="text-lg">
+              Once you paste the Post ID and click "Submit," the app will process the comments from the post and provide a sentiment analysis. The results will show you:
+            </p>
+            <ul className="text-lg">
+              <li>The overall sentiment score for and analysis the post</li>
+              <li>Top positive and negative words</li>
+              <li>Core sentences from the comments</li>
+            </ul>
+            <img
+              src="/analyze-sentiment.jpg" // Replace with an image showing the result after analysis
+              className="w-[35rem] h-[20rem] object-contain rounded-3xl mt-4"
+              alt="Sentiment Analysis Result"
+            />
+          </div>
+          <p className="text-lg mt-6">
+            Enjoy using the Sentiment Analysis App! Now you can easily evaluate feedback and get insights from any Facebook post.
+          </p>
         </div>
-
       </div>
     </>
-  )
-}
-
+  );
+};

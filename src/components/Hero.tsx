@@ -52,7 +52,6 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             saveAnalysisResult(analyzedComments, postID);
         }
     }, [overallAnalysis]);
-
     const saveAnalysisResult = async (analyzed: any[], postId: string) => {
         const result: AnalysisResult = {
             postId,
@@ -249,23 +248,30 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             </div>
 
             <div className="section2 sm:w-1/2 w-full flex flex-col gap-4 px-6">
-                {overallAnalysis && (
-                    <div className="analysis-results">
-                        <h2 className='text-2xl font-bold'>Overall Analysis</h2>
-                        <p>Overall Score: {overallAnalysis.overallScore}</p>
-                        <p>Overall Sentiment: {overallAnalysis.overallSentiment}</p>
-                        <p>Top Positive Words: {overallAnalysis.topPositiveWords.join(', ')}</p>
-                        <p>Top Negative Words: {overallAnalysis.topNegativeWords.join(', ')}</p>
-                        <p>Score Magnitude: {overallAnalysis.scoreMagnitude}</p>
-                        <h3 className='text-xl font-semibold'>Core Sentences:</h3>
-                        <ul>
-                            {overallAnalysis.coreSentences.map((sentence, index) => (
-                                <li key={index}>{sentence.comment} (Score: {sentence.score})</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-            </div>
+         {overallAnalysis && (
+        <div className="analysis-results">
+            <strong><TypeAnimation
+                sequence={[
+                    `Overall Analysis\n\n` +
+                    `Overall Score: ${overallAnalysis.overallScore}\n` +
+                    `Overall Sentiment: ${overallAnalysis.overallSentiment}\n` +
+                    `Top Positive Words: ${overallAnalysis.topPositiveWords.join(', ')}\n` +
+                    `Top Negative Words: ${overallAnalysis.topNegativeWords.join(', ')}\n` +
+                    `Score Magnitude: ${overallAnalysis.scoreMagnitude}\n\n` +
+                    `Core Sentences:\n` +
+                    overallAnalysis.coreSentences
+                        .map((sentence) => `${sentence.comment} (Score: ${sentence.score})`)
+                        .join('\n')
+                ]}
+                wrapper="div"
+                speed={99}
+                repeat={0} // Animation plays only once
+                className="text-lg"
+                style={{ whiteSpace: 'pre-line' }}
+            /></strong>
+        </div>
+    )}
+</div>
         </div>
     );
 };

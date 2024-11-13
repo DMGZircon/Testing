@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Alert,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, TextField, Button, Paper, Typography, Alert, Container } from '@mui/material';
+import { useAuth } from '../context/AuthContext';
 
 export const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === 'admin' && password === 'admin') {
-      localStorage.setItem('adminAuth', 'true');
-      navigate('/admin');
+      login(username, password);
     } else {
       setError('Invalid credentials');
     }
@@ -30,45 +22,81 @@ export const AdminLogin = () => {
       sx={{
         height: '100vh',
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        background: 'linear-gradient(135deg, #d9d9d9, #bfbfbf)', // Gray gradient
       }}
     >
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 400, width: '100%' }}>
-        <Typography variant="h5" gutterBottom>
-          Admin Login
-        </Typography>
-        <form onSubmit={handleLogin}>
-          <TextField
-            fullWidth
-            label="Username"
-            margin="normal"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
-            </Alert>
-          )}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ mt: 3 }}
-          >
-            Login
-          </Button>
-        </form>
-      </Paper>
+      <Container maxWidth="sm">
+        <Paper
+          elevation={5}
+          sx={{
+            padding: 4,
+            borderRadius: 3,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.15)',
+          }}
+        >
+          <Typography variant="h4" align="center" color="primary" sx={{ fontWeight: 'bold', mb: 3 }}>
+            Admin Login
+          </Typography>
+          
+          <form onSubmit={handleLogin}>
+            <TextField
+              fullWidth
+              label="Username"
+              margin="normal"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              sx={{
+                marginBottom: 2,
+                backgroundColor: '#fff',
+                borderRadius: '5px',
+                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+              }}
+            />
+            
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{
+                marginBottom: 2,
+                backgroundColor: '#fff',
+                borderRadius: '5px',
+                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+              }}
+            />
+            
+            {error && (
+              <Alert severity="error" sx={{ marginBottom: 2 }}>
+                {error}
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                padding: '12px',
+                backgroundColor: '#3f51b5',
+                color: '#fff',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  backgroundColor: '#303f9f',
+                },
+              }}
+            >
+              Login
+            </Button>
+          </form>
+        </Paper>
+      </Container>
     </Box>
   );
-}; 
+};
