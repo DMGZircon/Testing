@@ -76,7 +76,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         if (postID.trim() !== '') {
             setIsLoading(true);
             try {
-                const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}&limit=75`);
+                const fetchedData = await axios.get(`https://graph.facebook.com/v21.0/${pageID}_${postID}/comments?access_token=${accessToken}&limit=10000`);
                 const result = (fetchedData.data as { data: { [key: string]: any } }).data || [];
 
                 const sentiment = new Sentiment();
@@ -165,7 +165,7 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
         <div className="hero flex flex-col sm:flex-row justify-center items-center py-12 bg-gray-100 text-gray-800" id='home'>
             <div className="section1 sm:w-1/2 w-full flex flex-col gap-6 px-6">
                 <TypeAnimation
-                    sequence={['Sentiment Analysis', 1000, 'Enter your feedback', 1000, 'Analyze your feelings', 1000]}
+                    sequence={['Sentiment Analysis', 1000, 'Enter your feedback', 1000]}
                     wrapper="span"
                     speed={50}
                     className='text-4xl font-bold text-center'

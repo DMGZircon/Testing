@@ -29,7 +29,6 @@ import {
 } from 'chart.js';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext'; 
 
 ChartJS.register(
   CategoryScale,
@@ -87,40 +86,40 @@ export const Admin = () => {
   const [newOverallScore, setNewOverallScore] = useState<number>(0);
   const [newOverallSentiment, setNewOverallSentiment] = useState('');
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/admin-login');
-    } else {
-      fetchAnalysisHistory();
-      fetchTopPosts();
-    }
-  }, [isAuthenticated, navigate]);
+    fetchAnalysisHistory();
+    fetchTopPosts();
+}, [navigate]);
 
-  const fetchAnalysisHistory = async () => {
-    try {
-      const response = await axios.get<AnalysisResult[]>('/api/getResults');
-      setAnalysisHistory(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error('Error fetching analysis history:', error);
-      setAnalysisHistory([]);
-    }
-  };
+const fetchAnalysisHistory = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/api/getResults');
+    console.log('API Response:', response.data);
+
+    // Check if the data is directly an array or nested in an object (e.g., { results: [...] })
+    const results = Array.isArray(response.data)
+      ? response.data as any
+      : (response.data as any).results || [];
+
+    setAnalysisHistory(results);
+    console.log('Analysis History state:', results);
+  } catch (error) {
+    console.error('Error fetching analysis history:', error);
+    setAnalysisHistory([]);
+  }
+};
+
 
   const fetchTopPosts = async () => {
     try {
-      const response = await axios.get<AnalysisResult[]>('/api/getTopPosts');
+      const response = await axios.get<AnalysisResult[]>('http://localhost:5000/api/getTopPosts');
       setTopPosts(response.data);
     } catch (error) {
       console.error('Error fetching top posts:', error);
     }
   };
 
-  useEffect(() => {
-    fetchAnalysisHistory();
-    fetchTopPosts();
-  }, []);
 
   const handleNewPostSubmission = async () => {
     const newResult: AnalysisResult = {
@@ -135,7 +134,7 @@ export const Admin = () => {
     };
 
     try {
-      const response = await axios.post('/api/saveResult', newResult);
+      const response = await axios.post('http://localhost:5000/api/saveResult', newResult);
       setAnalysisHistory((prevHistory) => [...prevHistory, response.data as AnalysisResult]);
       setNewPostId('');
       setNewOverallScore(0);
@@ -154,7 +153,7 @@ export const Admin = () => {
   
   const handleDeletePost = async (id: number) => {
     try {
-      await axios.delete(`/api/deletePost/${id}`);
+      await axios.delete(`http://localhost:5000/api/deletePost/${id}`);
       setAnalysisHistory((prev) => prev.filter((post) => post.id !== id));
       setTopPosts((prev) => prev.filter((post) => post.id !== id));
     } catch (error) {
@@ -164,7 +163,7 @@ export const Admin = () => {
 
   const handleDeleteAllPosts = async () => {
     try {
-      await axios.delete('/api/deleteAllPosts');
+      await axios.delete('http://localhost:5000/api/deleteAllPosts');
       setAnalysisHistory([]);
       setTopPosts([]);
     } catch (error) {
@@ -307,7 +306,7 @@ export const Admin = () => {
             </TableHead>
             <TableBody>
               {analysisHistory.map((result) => (
-                <TableRow key={result.id} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
+                <TableRow key={result.id ?? `${result.postId}-${Math.random()}`} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
                   <TableCell>{result.postId}</TableCell>
                   <TableCell>{new Date(result.date).toLocaleString()}</TableCell>
                   <TableCell>{result.overallScore}</TableCell>
@@ -339,15 +338,23 @@ export const Admin = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {topPosts.map((result) => (
-                <TableRow key={result.id}>
-                  <TableCell>{result.postId}</TableCell>
-                  <TableCell>{new Date(result.date).toLocaleString()}</TableCell>
-                  <TableCell>{result.overallScore}</TableCell>
-                  <TableCell>{result.overallSentiment}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                <>
+                  {Array.isArray(topPosts) && topPosts.length > 0 ? (
+                    topPosts.map((result) => (
+                      <TableRow key={result.id ?? `${result.postId}-${Math.random()}`}>
+                        <TableCell>{result.postId}</TableCell>
+                        <TableCell>{new Date(result.date).toLocaleString()}</TableCell>
+                        <TableCell>{result.overallScore}</TableCell>
+                        <TableCell>{result.overallSentiment}</TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4}>No data available</TableCell>
+                    </TableRow>
+                  )}
+                </>
+              </TableBody>
           </Table>
         </TableContainer>
       </TabPanel>
@@ -357,8 +364,6 @@ export const Admin = () => {
     </Box>
   );
 };
-
-
 // Helper function to get week number from a date
 const getWeekNumber = (date: Date) => {
   const startDate = new Date(date.getFullYear(), 0, 1);

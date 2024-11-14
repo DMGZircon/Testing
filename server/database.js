@@ -1,25 +1,20 @@
+// server/database.js
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import path from 'path';
 
-// Get the absolute path to the current file using import.meta.url
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Path to database file (it will create this file if it doesn't exist)
+const dbPath = path.resolve('analysis.db');
 
-// Create a function to open the SQLite database connection
+// Function to open the database connection
 const openDb = async () => {
-  // Get the absolute path to the analysis.db file in the same directory as database.js
-  const dbPath = join(__dirname, 'analysis.db');  // Corrected the path
-
-  // Open the database connection to the analysis.db file
   return open({
     filename: dbPath,
-    driver: sqlite3.Database
+    driver: sqlite3.Database,
   });
 };
 
-// Initialize the database (create table if it doesn't exist)
+// Create table if it does not exist
 const initDb = async () => {
   const db = await openDb();
   await db.exec(`
