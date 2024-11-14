@@ -62,14 +62,21 @@ export const Hero: React.FC<IHero> = ({ setIsLoading }) => {
             topNegativeWords: overallAnalysis?.topNegativeWords || [],
             scoreMagnitude: overallAnalysis?.scoreMagnitude || 0
         };
+    
         console.log(analyzed);
+    
         try {
-            await axios.post('http://localhost:5000/api/saveResult', result);
+            // Replace the URL with your Hostinger URL pointing to save_analysis.php
+            await axios.post('https://beige-ant-849030.hostingersite.com/save_analysis.php', result, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             console.log('Analysis result saved to the database successfully.');
         } catch (error) {
             console.error('Error saving analysis result:', error);
         }
-    };
+        };
 
     const getComments = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
